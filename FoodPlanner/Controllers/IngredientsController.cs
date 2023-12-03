@@ -10,8 +10,6 @@ using FoodPlanner.Models;
 
 namespace FoodPlanner.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class IngredientsController : ControllerBase
     {
         private readonly FoodPlannerContext _context;
