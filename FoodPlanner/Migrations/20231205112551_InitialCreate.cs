@@ -17,7 +17,7 @@ namespace FoodPlanner.Migrations
                 {
                     IngredientID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    IngredientName = table.Column<int>(type: "INTEGER", nullable: false)
+                    IngredientName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,19 +39,6 @@ namespace FoodPlanner.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipe", x => x.RecipeID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tag",
-                columns: table => new
-                {
-                    TagID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    TagName = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tag", x => x.TagID);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,7 +70,7 @@ namespace FoodPlanner.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     RecipeID = table.Column<int>(type: "INTEGER", nullable: false),
                     IngredientID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<decimal>(type: "TEXT", nullable: false),
                     Unit = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -103,32 +90,6 @@ namespace FoodPlanner.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "RecipeTag",
-                columns: table => new
-                {
-                    RecipeTagID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RecipeID = table.Column<int>(type: "INTEGER", nullable: false),
-                    TagID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeTag", x => x.RecipeTagID);
-                    table.ForeignKey(
-                        name: "FK_RecipeTag_Recipe_RecipeID",
-                        column: x => x.RecipeID,
-                        principalTable: "Recipe",
-                        principalColumn: "RecipeID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RecipeTag_Tag_TagID",
-                        column: x => x.TagID,
-                        principalTable: "Tag",
-                        principalColumn: "TagID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_MealPlan_RecipeID",
                 table: "MealPlan",
@@ -143,16 +104,6 @@ namespace FoodPlanner.Migrations
                 name: "IX_RecipeIngredient_RecipeID",
                 table: "RecipeIngredient",
                 column: "RecipeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeTag_RecipeID",
-                table: "RecipeTag",
-                column: "RecipeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeTag_TagID",
-                table: "RecipeTag",
-                column: "TagID");
         }
 
         /// <inheritdoc />
@@ -165,16 +116,10 @@ namespace FoodPlanner.Migrations
                 name: "RecipeIngredient");
 
             migrationBuilder.DropTable(
-                name: "RecipeTag");
-
-            migrationBuilder.DropTable(
                 name: "Ingredient");
 
             migrationBuilder.DropTable(
                 name: "Recipe");
-
-            migrationBuilder.DropTable(
-                name: "Tag");
         }
     }
 }

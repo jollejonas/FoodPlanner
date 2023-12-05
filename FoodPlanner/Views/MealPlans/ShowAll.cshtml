@@ -1,0 +1,54 @@
+﻿@model IEnumerable<FoodPlanner.Models.MealPlan>
+
+@{
+    ViewData["Title"] = "Alle madplaner";
+}
+
+<h1>Madplans data</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MealPlanID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipe.RecipeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Purchased)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MealPlanID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipe.RecipeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Purchased)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MealPlanID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MealPlanID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MealPlanID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

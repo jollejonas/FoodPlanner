@@ -94,8 +94,8 @@ namespace FoodPlanner.Migrations
                     b.Property<int>("IngredientID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("RecipeID")
                         .HasColumnType("INTEGER");
@@ -111,42 +111,6 @@ namespace FoodPlanner.Migrations
                     b.HasIndex("RecipeID");
 
                     b.ToTable("RecipeIngredient");
-                });
-
-            modelBuilder.Entity("FoodPlanner.Models.RecipeTag", b =>
-                {
-                    b.Property<int>("RecipeTagID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RecipeID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TagID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("RecipeTagID");
-
-                    b.HasIndex("RecipeID");
-
-                    b.HasIndex("TagID");
-
-                    b.ToTable("RecipeTag");
-                });
-
-            modelBuilder.Entity("FoodPlanner.Models.Tag", b =>
-                {
-                    b.Property<int>("TagID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TagName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("TagID");
-
-                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("FoodPlanner.Models.MealPlan", b =>
@@ -179,30 +143,9 @@ namespace FoodPlanner.Migrations
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("FoodPlanner.Models.RecipeTag", b =>
-                {
-                    b.HasOne("FoodPlanner.Models.Recipe", "Recipe")
-                        .WithMany("RecipeTags")
-                        .HasForeignKey("RecipeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FoodPlanner.Models.Tag", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recipe");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("FoodPlanner.Models.Recipe", b =>
                 {
                     b.Navigation("RecipeIngredients");
-
-                    b.Navigation("RecipeTags");
                 });
 #pragma warning restore 612, 618
         }

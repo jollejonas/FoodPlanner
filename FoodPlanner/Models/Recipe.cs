@@ -14,7 +14,6 @@
         public int Portions { get; set; }
 
         public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; }
-        public virtual ICollection<RecipeTag> RecipeTags { get; set; }
 
     }
 }

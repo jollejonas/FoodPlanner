@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodPlanner.Data;
 using FoodPlanner.Models;
+using FoodPlanner.Models.ViewModels;
 
 namespace FoodPlanner.Controllers
 {
-    public class MealPlansController : ControllerBase
+    public class MealPlansController : Controller
     {
         private readonly FoodPlannerContext _context;
 
@@ -19,104 +20,182 @@ namespace FoodPlanner.Controllers
             _context = context;
         }
 
-        // GET: api/MealPlans
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MealPlan>>> GetMealPlan()
+        // GET: MealPlans
+        public IActionResult Index()
         {
-          if (_context.MealPlan == null)
-          {
-              return NotFound();
-          }
-            return await _context.MealPlan.ToListAsync();
+            var calendar = new CalendarViewModel();
+            var mealPlans = _context.MealPlan.Include(mp => mp.Recipe).ToList();
+            calendar.AssignMealPlans(mealPlans);
+
+            return View(calendar);
         }
 
-        // GET: api/MealPlans/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MealPlan>> GetMealPlan(int id)
-        {
-          if (_context.MealPlan == null)
-          {
-              return NotFound();
-          }
-            var mealPlan = await _context.MealPlan.FindAsync(id);
+        // GET: Show all MealPlans
 
+        public async Task<IActionResult> ShowAll()
+        {
+            return _context.MealPlan != null ?
+                        View(await _context.MealPlan.Include(mp => mp.Recipe).ToListAsync()) :
+                        Problem("Entity set 'FoodPlannerContext.MealPlan'  is null.");
+        }
+
+        // GET: MealPlans/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.MealPlan == null)
+            {
+                return NotFound();
+            }
+
+            var mealPlan = await _context.MealPlan
+                .Include(m => m.Recipe)
+                .FirstOrDefaultAsync(m => m.MealPlanID == id);
             if (mealPlan == null)
             {
                 return NotFound();
             }
 
-            return mealPlan;
+            return View(mealPlan);
         }
 
-        // PUT: api/MealPlans/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMealPlan(int id, MealPlan mealPlan)
+        // GET: MealPlans/Create
+        public IActionResult Create()
+        {
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID");
+            return View();
+        }
+
+        // POST: MealPlans/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("MealPlanID,RecipeID,Date,Purchased")] MealPlan mealPlan)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(mealPlan);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", mealPlan.RecipeID);
+            if (!ModelState.IsValid)
+            {
+                foreach (var entry in ModelState)
+                {
+                    if (entry.Value.Errors.Count > 0)
+                    {
+                        // 'entry.Key' holds the name of the field
+                        // 'entry.Value.Errors' holds the collection of errors
+                        foreach (var error in entry.Value.Errors)
+                        {
+                            // 'error.ErrorMessage' contains the error message
+                            Console.WriteLine($"{entry.Key}: {error.ErrorMessage}");
+                        }
+                    }
+                }
+
+                // Optionally, return the same view to display the errors
+                return View(mealPlan);
+            }
+            return View(mealPlan);
+
+        }
+
+        // GET: MealPlans/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.MealPlan == null)
+            {
+                return NotFound();
+            }
+
+            var mealPlan = await _context.MealPlan.FindAsync(id);
+            if (mealPlan == null)
+            {
+                return NotFound();
+            }
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", mealPlan.RecipeID);
+            return View(mealPlan);
+        }
+
+        // POST: MealPlans/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("MealPlanID,RecipeID,Date,Purchased")] MealPlan mealPlan)
         {
             if (id != mealPlan.MealPlanID)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(mealPlan).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MealPlanExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(mealPlan);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!MealPlanExists(mealPlan.MealPlanID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", mealPlan.RecipeID);
+            return View(mealPlan);
         }
 
-        // POST: api/MealPlans
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<MealPlan>> PostMealPlan(MealPlan mealPlan)
+        // GET: MealPlans/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-          if (_context.MealPlan == null)
-          {
-              return Problem("Entity set 'FoodPlannerContext.MealPlan'  is null.");
-          }
-            _context.MealPlan.Add(mealPlan);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMealPlan", new { id = mealPlan.MealPlanID }, mealPlan);
-        }
-
-        // DELETE: api/MealPlans/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMealPlan(int id)
-        {
-            if (_context.MealPlan == null)
+            if (id == null || _context.MealPlan == null)
             {
                 return NotFound();
             }
-            var mealPlan = await _context.MealPlan.FindAsync(id);
+
+            var mealPlan = await _context.MealPlan
+                .Include(m => m.Recipe)
+                .FirstOrDefaultAsync(m => m.MealPlanID == id);
             if (mealPlan == null)
             {
                 return NotFound();
             }
 
-            _context.MealPlan.Remove(mealPlan);
-            await _context.SaveChangesAsync();
+            return View(mealPlan);
+        }
 
-            return NoContent();
+        // POST: MealPlans/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.MealPlan == null)
+            {
+                return Problem("Entity set 'FoodPlannerContext.MealPlan'  is null.");
+            }
+            var mealPlan = await _context.MealPlan.FindAsync(id);
+            if (mealPlan != null)
+            {
+                _context.MealPlan.Remove(mealPlan);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ShowAll));
         }
 
         private bool MealPlanExists(int id)
         {
-            return (_context.MealPlan?.Any(e => e.MealPlanID == id)).GetValueOrDefault();
+          return (_context.MealPlan?.Any(e => e.MealPlanID == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿@model FoodPlanner.Models.ViewModels.CreateRecipeViewModel
+
+@{
+    ViewData["Title"] = Model.RecipeName;
+}
+
+<h2>@Model.RecipeName</h2>
+
+@if (!string.IsNullOrEmpty(Model.ImgURL))
+{
+    <img src="@Model.ImgURL" alt="Billede af @Model.RecipeName" style="max-width: 400px"/>
+}
+
+<h3>Fremgangsmåde</h3>
+<p>@Model.Description</p>
+
+@if (!string.IsNullOrEmpty(Model.Link))
+{
+    <a href="@Model.Link">Link til opskrift</a>
+}
+
+<p>Portioner: @Model.Portions</p>
+
+<h3>Ingredienser</h3>
+<ul>
+    @for (int i = 0; i < Model.IngredientText.Count; i++)
+    {
+        <li>@Model.Quantities[i] @Model.Units[i] @Model.IngredientText[i]</li>
+    }
+</ul>

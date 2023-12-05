@@ -7,7 +7,7 @@ namespace FoodPlanner.Models
         public int RecipeIngredientID { get; set; }
         public int RecipeID { get; set; }
         public int IngredientID { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string Unit { get; set; }
 
         [ForeignKey("RecipeID")]

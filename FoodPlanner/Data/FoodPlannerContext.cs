@@ -16,13 +16,9 @@ namespace FoodPlanner.Data
 
         public DbSet<FoodPlanner.Models.Ingredient> Ingredient { get; set; } = default!;
 
-        public DbSet<FoodPlanner.Models.Tag> Tag { get; set; } = default!;
-
         public DbSet<FoodPlanner.Models.Recipe> Recipe { get; set; } = default!;
 
         public DbSet<FoodPlanner.Models.RecipeIngredient> RecipeIngredient { get; set; } = default!;
-
-        public DbSet<FoodPlanner.Models.RecipeTag> RecipeTag { get; set; } = default!;
 
         public DbSet<FoodPlanner.Models.MealPlan> MealPlan { get; set; } = default!;
     }

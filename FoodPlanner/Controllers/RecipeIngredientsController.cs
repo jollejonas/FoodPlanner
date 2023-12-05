@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodPlanner.Data;
 using FoodPlanner.Models;
 
 namespace FoodPlanner.Controllers
 {
-    public class RecipeIngredientsController : ControllerBase
+    public class RecipeIngredientsController : Controller
     {
         private readonly FoodPlannerContext _context;
 
@@ -19,104 +19,156 @@ namespace FoodPlanner.Controllers
             _context = context;
         }
 
-        // GET: api/RecipeIngredients
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecipeIngredient>>> GetRecipeIngredient()
+        // GET: RecipeIngredients
+        public async Task<IActionResult> Index()
         {
-          if (_context.RecipeIngredient == null)
-          {
-              return NotFound();
-          }
-            return await _context.RecipeIngredient.ToListAsync();
+            var foodPlannerContext = _context.RecipeIngredient.Include(r => r.Ingredient).Include(r => r.Recipe);
+            return View(await foodPlannerContext.ToListAsync());
         }
 
-        // GET: api/RecipeIngredients/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<RecipeIngredient>> GetRecipeIngredient(int id)
+        // GET: RecipeIngredients/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-          if (_context.RecipeIngredient == null)
-          {
-              return NotFound();
-          }
-            var recipeIngredient = await _context.RecipeIngredient.FindAsync(id);
+            if (id == null || _context.RecipeIngredient == null)
+            {
+                return NotFound();
+            }
 
+            var recipeIngredient = await _context.RecipeIngredient
+                .Include(r => r.Ingredient)
+                .Include(r => r.Recipe)
+                .FirstOrDefaultAsync(m => m.RecipeIngredientID == id);
             if (recipeIngredient == null)
             {
                 return NotFound();
             }
 
-            return recipeIngredient;
+            return View(recipeIngredient);
         }
 
-        // PUT: api/RecipeIngredients/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRecipeIngredient(int id, RecipeIngredient recipeIngredient)
+        // GET: RecipeIngredients/Create
+        public IActionResult Create()
+        {
+            ViewData["IngredientID"] = new SelectList(_context.Ingredient, "IngredientID", "IngredientID");
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID");
+            return View();
+        }
+
+        // POST: RecipeIngredients/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("RecipeIngredientID,RecipeID,IngredientID,Quantity,Unit")] RecipeIngredient recipeIngredient)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(recipeIngredient);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["IngredientID"] = new SelectList(_context.Ingredient, "IngredientID", "IngredientID", recipeIngredient.IngredientID);
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", recipeIngredient.RecipeID);
+            return View(recipeIngredient);
+        }
+
+        // GET: RecipeIngredients/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.RecipeIngredient == null)
+            {
+                return NotFound();
+            }
+
+            var recipeIngredient = await _context.RecipeIngredient.FindAsync(id);
+            if (recipeIngredient == null)
+            {
+                return NotFound();
+            }
+            ViewData["IngredientID"] = new SelectList(_context.Ingredient, "IngredientID", "IngredientID", recipeIngredient.IngredientID);
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", recipeIngredient.RecipeID);
+            return View(recipeIngredient);
+        }
+
+        // POST: RecipeIngredients/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("RecipeIngredientID,RecipeID,IngredientID,Quantity,Unit")] RecipeIngredient recipeIngredient)
         {
             if (id != recipeIngredient.RecipeIngredientID)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(recipeIngredient).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecipeIngredientExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(recipeIngredient);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!RecipeIngredientExists(recipeIngredient.RecipeIngredientID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            ViewData["IngredientID"] = new SelectList(_context.Ingredient, "IngredientID", "IngredientID", recipeIngredient.IngredientID);
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", recipeIngredient.RecipeID);
+            return View(recipeIngredient);
         }
 
-        // POST: api/RecipeIngredients
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<RecipeIngredient>> PostRecipeIngredient(RecipeIngredient recipeIngredient)
+        // GET: RecipeIngredients/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-          if (_context.RecipeIngredient == null)
-          {
-              return Problem("Entity set 'FoodPlannerContext.RecipeIngredient'  is null.");
-          }
-            _context.RecipeIngredient.Add(recipeIngredient);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetRecipeIngredient", new { id = recipeIngredient.RecipeIngredientID }, recipeIngredient);
-        }
-
-        // DELETE: api/RecipeIngredients/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecipeIngredient(int id)
-        {
-            if (_context.RecipeIngredient == null)
+            if (id == null || _context.RecipeIngredient == null)
             {
                 return NotFound();
             }
-            var recipeIngredient = await _context.RecipeIngredient.FindAsync(id);
+
+            var recipeIngredient = await _context.RecipeIngredient
+                .Include(r => r.Ingredient)
+                .Include(r => r.Recipe)
+                .FirstOrDefaultAsync(m => m.RecipeIngredientID == id);
             if (recipeIngredient == null)
             {
                 return NotFound();
             }
 
-            _context.RecipeIngredient.Remove(recipeIngredient);
-            await _context.SaveChangesAsync();
+            return View(recipeIngredient);
+        }
 
-            return NoContent();
+        // POST: RecipeIngredients/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.RecipeIngredient == null)
+            {
+                return Problem("Entity set 'FoodPlannerContext.RecipeIngredient'  is null.");
+            }
+            var recipeIngredient = await _context.RecipeIngredient.FindAsync(id);
+            if (recipeIngredient != null)
+            {
+                _context.RecipeIngredient.Remove(recipeIngredient);
+            }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool RecipeIngredientExists(int id)
         {
-            return (_context.RecipeIngredient?.Any(e => e.RecipeIngredientID == id)).GetValueOrDefault();
+          return (_context.RecipeIngredient?.Any(e => e.RecipeIngredientID == id)).GetValueOrDefault();
         }
     }
 }

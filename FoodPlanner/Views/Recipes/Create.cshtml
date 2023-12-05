@@ -1,0 +1,105 @@
+﻿@model FoodPlanner.Models.ViewModels.CreateRecipeViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Recipe</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- RecipeName Field -->
+            <div class="form-group">
+                <label asp-for="RecipeName" class="control-label">Navn</label>
+                <input asp-for="RecipeName" class="form-control" />
+                <span asp-validation-for="RecipeName" class="text-danger"></span>
+            </div>
+
+            <!-- Description Field -->
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Fremgangsmåde</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- ImgURL Field -->
+            <div class="form-group">
+                <label asp-for="ImgURL" class="control-label">Billed URL</label>
+                <input asp-for="ImgURL" class="form-control" />
+                <span asp-validation-for="ImgURL" class="text-danger"></span>
+            </div>
+
+            <!-- Link Field -->
+            <div class="form-group">
+                <label asp-for="Link" class="control-label">Link til opskrift</label>
+                <input asp-for="Link" class="form-control" />
+                <span asp-validation-for="Link" class="text-danger"></span>
+            </div>
+
+            <!-- Portions Field -->
+            <div class="form-group">
+                <label asp-for="Portions" class="control-label">Antal portioner</label>
+                <input asp-for="Portions" type="number" class="form-control" />
+                <span asp-validation-for="Portions" class="text-danger"></span>
+            </div>
+
+            <!-- Dynamic Ingredient Entries -->
+            <div id="ingredient-entries">
+                <!-- Ingredient Entry Template -->
+                <!-- ... (existing ingredient entry fields) -->
+            </div>
+            <button type="button" id="add-ingredient" class="btn btn-secondary">Tilføj ingrediens</button>
+
+            <!-- Submit Button -->
+            <div class="form-group mt-3">
+                <input type="submit" value="Opret opskrift" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Tilbage til opskrift oversigt</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('add-ingredient').addEventListener('click', function () {
+            var container = document.getElementById('ingredient-entries');
+            var ingredientEntryHtml = `
+                <div class="row">
+                    <div class="col">
+                        <label>Ingredienser</label>
+                        <input type="text" name="IngredientText" class="form-control" />
+                    </div>
+                            <div class="col">
+                        <label>Mængde</label>
+                        <input type="text" name="Quantities" class="form-control" />
+                    </div>
+                            <div class="col">
+                        <label>Måleenhed</label>
+                        <select name="Units" class="form-control">
+            @if (Model.UnitOptions != null)
+            {
+                @foreach (var unit in Model.UnitOptions)
+                {
+                    <option value="@unit.Value">@unit.Text</option>
+                }
+            }
+        
+                        </select>
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', ingredientEntryHtml);
+        });
+    </script>
+}

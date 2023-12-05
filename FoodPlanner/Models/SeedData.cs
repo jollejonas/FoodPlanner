@@ -23,9 +23,6 @@ public static class SeedData
             var sugar = new Ingredient { IngredientName = "Sugar" };
             var cocoa = new Ingredient { IngredientName = "Cocoa Powder" };
 
-            var sweetTag = new Tag { TagName = "Sweet" };
-            var dessertTag = new Tag { TagName = "Dessert" };
-
             var chocolateCake = new Recipe
             {
                 RecipeName = "Chocolate Cake",
@@ -39,16 +36,11 @@ public static class SeedData
                     new RecipeIngredient { Ingredient = sugar, Quantity = 1, Unit = "Cup" },
                     new RecipeIngredient { Ingredient = cocoa, Quantity = 1, Unit = "Cup" }
                 },
-                RecipeTags = new List<RecipeTag>
-                {
-                    new RecipeTag { Tag = sweetTag },
-                    new RecipeTag { Tag = dessertTag }
-                }
             };
 
             context.MealPlan.Add(new MealPlan
             {
-                Date = DateTime.Parse("2023-11-29"),
+                Date = DateTime.Now,
                 Purchased = "No",
                 Recipe = chocolateCake
             });

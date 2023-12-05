@@ -1,0 +1,36 @@
+﻿@model IEnumerable<FoodPlanner.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Opskrifter";
+}
+
+<h1>Opskrifter</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <h3>Navn</h3>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecipeName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeID">Ændrer</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeID">Detaljer</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeID">Slet</a> |
+                <p>Tilføj til madplan</p>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

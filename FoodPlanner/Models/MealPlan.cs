@@ -12,6 +12,6 @@ namespace FoodPlanner.Models
         public string Purchased { get; set; }
 
         [ForeignKey("RecipeID")]
-        public virtual Recipe Recipe { get; set; }
+        public virtual Recipe ?Recipe { get; set; }
     }
 }
