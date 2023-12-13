@@ -14,18 +14,18 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MealPlanID" />
             <div class="form-group">
-                <label asp-for="RecipeID" class="control-label"></label>
+                <label asp-for="RecipeID" class="control-label">Navn</label>
                 <select asp-for="RecipeID" class ="form-control" asp-items="ViewBag.RecipeID">
                     <option>Vælg en opskrift</option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
+                <label asp-for="Date" class="control-label">Dato</label>
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Purchased" class="control-label"></label>
+                <label asp-for="Purchased" class="control-label">Indkøbt</label>
                 <select asp-for="Purchased" class="form-control" asp-items="ViewBag.Purchased">
                 </select>
                 <span asp-validation-for="Purchased" class="text-danger"></span>
@@ -38,7 +38,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Tilbage til oversigt</a>
 </div>
 
 @section Scripts {

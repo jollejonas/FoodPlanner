@@ -8,6 +8,7 @@ builder.Services.AddDbContext<FoodPlannerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FoodPlannerContext") ?? throw new InvalidOperationException("Connection string 'FoodPlannerContext' not found.")));
 
 // Add services to the container.
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -33,6 +34,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=MealPlans}/{action=Index}/{id?}");

@@ -1,0 +1,25 @@
+﻿@page
+@model FoodPlanner.Pages.ShoppingList.IndexModel
+
+@{
+    Layout = "_Layout";
+}
+@{
+    <table>
+        <thead>
+            <tr>
+                <th>Vare</th>
+                <th>Mængde</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ingredient in Model.Ingredients)
+            {
+                <tr>
+                    <td>@ingredient["name"]</td>
+                    <td>@ingredient["totalQuantity"] @ingredient["unit"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

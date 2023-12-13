@@ -36,7 +36,7 @@ namespace FoodPlanner.Controllers
         {
             return _context.MealPlan != null ?
                         View(await _context.MealPlan.Include(mp => mp.Recipe).ToListAsync()) :
-                        Problem("Entity set 'FoodPlannerContext.MealPlan'  is null.");
+                        Problem("'FoodPlannerContext.MealPlan' er null.");
         }
 
         // GET: MealPlans/Details/5

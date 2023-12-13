@@ -24,7 +24,6 @@ namespace FoodPlanner.Models.ViewModels
             foreach (var day in Days)
             {
                 day.MealPlan = mealPlans?.FirstOrDefault(mp => mp.Date.Date == day.Date.Date);
-                Console.WriteLine(day.MealPlan);
             }
         }
     }
