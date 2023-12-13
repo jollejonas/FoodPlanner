@@ -7,6 +7,7 @@ namespace FoodPlanner.Models
         public int RecipeIngredientID { get; set; }
         public int RecipeID { get; set; }
         public int IngredientID { get; set; }
+        [Column(TypeName = "decimal(10, 1)")]
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
 

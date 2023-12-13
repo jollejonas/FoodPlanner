@@ -27,8 +27,8 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.RecipeID">Ændrer</a> |
                 <a asp-action="Details" asp-route-id="@item.RecipeID">Detaljer</a> |
-                <a asp-action="Delete" asp-route-id="@item.RecipeID">Slet</a> |
-                <p>Tilføj til madplan</p>
+                    <a asp-action="Delete" asp-route-id="@item.RecipeID">Slet</a> |
+                    <a asp-controller="MealPlans" asp-action="Create" asp-route-id="@item.RecipeID">Tilføj til madplan</a>
             </td>
         </tr>
 }

@@ -15,9 +15,9 @@ namespace FoodPlanner.Migrations
                 name: "Ingredient",
                 columns: table => new
                 {
-                    IngredientID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IngredientName = table.Column<string>(type: "TEXT", nullable: false)
+                    IngredientID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IngredientName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,13 +28,13 @@ namespace FoodPlanner.Migrations
                 name: "Recipe",
                 columns: table => new
                 {
-                    RecipeID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RecipeName = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    ImgURL = table.Column<string>(type: "TEXT", nullable: false),
-                    Link = table.Column<string>(type: "TEXT", nullable: false),
-                    Portions = table.Column<int>(type: "INTEGER", nullable: false)
+                    RecipeID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecipeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImgURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Portions = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,11 +45,11 @@ namespace FoodPlanner.Migrations
                 name: "MealPlan",
                 columns: table => new
                 {
-                    MealPlanID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RecipeID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Purchased = table.Column<string>(type: "TEXT", nullable: false)
+                    MealPlanID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecipeID = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Purchased = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,12 +66,12 @@ namespace FoodPlanner.Migrations
                 name: "RecipeIngredient",
                 columns: table => new
                 {
-                    RecipeIngredientID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RecipeID = table.Column<int>(type: "INTEGER", nullable: false),
-                    IngredientID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantity = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Unit = table.Column<string>(type: "TEXT", nullable: false)
+                    RecipeIngredientID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecipeID = table.Column<int>(type: "int", nullable: false),
+                    IngredientID = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(10,4)", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

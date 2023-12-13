@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<FoodPlannerContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("FoodPlannerContext") ?? throw new InvalidOperationException("Connection string 'FoodPlannerContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FoodPlannerContext") ?? throw new InvalidOperationException("Connection string 'FoodPlannerContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

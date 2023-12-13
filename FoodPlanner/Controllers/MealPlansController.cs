@@ -59,10 +59,32 @@ namespace FoodPlanner.Controllers
         }
 
         // GET: MealPlans/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID");
-            return View();
+            var purchaseOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Yes" },
+                new SelectListItem { Text = "No" }
+            };
+
+            ViewData["Purchased"] = new SelectList(purchaseOptions, "Text", "Text");
+            var mealPlan = new MealPlan
+            {
+                Date = DateTime.Today
+            };
+
+            if (id.HasValue)
+            {
+                mealPlan.RecipeID = (int)id;
+                ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeName", mealPlan.RecipeID);
+                Console.WriteLine("Something");
+            }
+            else
+            {
+                ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeName");
+                Console.WriteLine("No Value");
+            }
+            return View(mealPlan);
         }
 
         // POST: MealPlans/Create
@@ -105,6 +127,13 @@ namespace FoodPlanner.Controllers
         // GET: MealPlans/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var purchaseOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Yes" },
+                new SelectListItem { Text = "No" }
+            };
+
+            ViewData["Purchased"] = new SelectList(purchaseOptions, "Text", "Text");
             if (id == null || _context.MealPlan == null)
             {
                 return NotFound();
@@ -115,7 +144,7 @@ namespace FoodPlanner.Controllers
             {
                 return NotFound();
             }
-            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeID", mealPlan.RecipeID);
+            ViewData["RecipeID"] = new SelectList(_context.Recipe, "RecipeID", "RecipeName", mealPlan.RecipeID);
             return View(mealPlan);
         }
 

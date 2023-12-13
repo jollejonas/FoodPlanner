@@ -1,10 +1,10 @@
 ﻿@model FoodPlanner.Models.MealPlan
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Ændre";
 }
 
-<h1>Edit</h1>
+<h1>Ændre</h1>
 
 <h4>MealPlan</h4>
 <hr />
@@ -15,8 +15,9 @@
             <input type="hidden" asp-for="MealPlanID" />
             <div class="form-group">
                 <label asp-for="RecipeID" class="control-label"></label>
-                <select asp-for="RecipeID" class="form-control" asp-items="ViewBag.RecipeID"></select>
-                <span asp-validation-for="RecipeID" class="text-danger"></span>
+                <select asp-for="RecipeID" class ="form-control" asp-items="ViewBag.RecipeID">
+                    <option>Vælg en opskrift</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
@@ -25,11 +26,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Purchased" class="control-label"></label>
-                <input asp-for="Purchased" class="form-control" />
+                <select asp-for="Purchased" class="form-control" asp-items="ViewBag.Purchased">
+                </select>
                 <span asp-validation-for="Purchased" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Gem" class="btn btn-primary" />
             </div>
         </form>
     </div>
